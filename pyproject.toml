@@ -4,4 +4,27 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "typer>=0.15.1",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "nox>=2025.2.9",
+    "pytest>=8.3.4",
+    "pytest-sugar>=1.0.0",
+    "ruff>=0.9.6",
+]
+
+[tool.uv]
+package = true
+
+[tool.mypy]
+strict = true
+exclude = ["noxfile.py"]
+
+[project.scripts]
+papyrus = "papyrus.main:app"
+
+

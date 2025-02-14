@@ -1,0 +1,2 @@
+"""Papyrus cli application."""
+
