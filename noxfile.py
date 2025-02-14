@@ -21,7 +21,8 @@ def tests(session: nox.Session) -> None:
 def ruff(session: nox.Session) -> None:
     """Run ruff."""
     sync_install(session, env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location})
-    session.run("ruff", "check")
+    session.run("ruff", "format")
+    session.run("ruff", "check", "--fix")
 
 
 @nox.session(venv_backend="uv")
