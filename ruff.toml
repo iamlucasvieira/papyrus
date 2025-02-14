@@ -32,7 +32,52 @@ line-length = 88
 indent-width = 4
 
 [lint]
-select = ["F", "E", "W", "C90", "I", "N", "D", "UP", "YTT", "ANN", "ASYNC", "S", "BLE"]
+select = [
+    "F", 
+    "E", 
+    "W", 
+    "C90", 
+    "I", 
+    "N", 
+    "D", 
+    "UP", 
+    "YTT", 
+    "ANN", 
+    "ASYNC", 
+    "S", 
+    "BLE", 
+    "B", 
+    "A", 
+    "C4", 
+    "DTZ", 
+    "T10", 
+    "EM", 
+    "FA", 
+    "ISC", 
+    "LOG", 
+    "G", 
+    "PIE", 
+    "T20", 
+    "PYI",
+    "PT",
+    "Q",
+    "RSE",
+    "RET",
+    "SLF",
+    "SLOT",
+    "SIM",
+    "INT",
+    "ARG",
+    "PTH",
+    "TD",
+    "FIX",
+    "ERA",
+    "PL",
+    "PERF",
+    "FURB",
+    "RUF"
+]
+
 ignore = [
     "S101",  # Use of assert detected.
     "D203",  # 1 blank line required before class docstring.
