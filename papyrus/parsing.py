@@ -6,6 +6,8 @@ from collections.abc import Generator
 from dataclasses import dataclass
 from pathlib import Path
 
+from papyrus.log import log_time
+
 from .finder import PyramidFiles
 
 logger = logging.getLogger(__name__)
@@ -23,10 +25,8 @@ class Route:
 class Parser:
     """Class responsible for parsing information in a pyramid application."""
 
-    def __init__(self: "Parser") -> None:
-        """Initialize the parser with the request."""
-
     @staticmethod
+    @log_time(logger)
     def get_routes_pattern(base_dir: Path, file_name: str | None) -> dict[str, str]:
         """Get all routes from a pyramid application.
 
@@ -52,6 +52,7 @@ class AstCrawler:
         with file_path.open("r", encoding="utf-8") as file:
             self.tree = ast.parse(file.read())
 
+    @log_time(logger)
     def iter_add_route_calls(self: "AstCrawler") -> Generator[ast.Call]:
         """Yield each call to .add_route() one at a time."""
         for node in ast.walk(self.tree):
@@ -63,6 +64,7 @@ class AstCrawler:
                 yield node
 
     @staticmethod
+    @log_time(logger)
     def get_route_name_and_pattern(node: ast.Call) -> tuple[str | None, str | None]:
         """Get the route name and pattern from an add_route call."""
         expected_length = 2

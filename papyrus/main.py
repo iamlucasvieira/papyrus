@@ -1,21 +1,46 @@
 """Application entry point."""
 
+import logging
+import os
+from pathlib import Path
+
 import typer
 from rich.console import Console
 
 from papyrus.log import setup_logging
+from papyrus.parsing import Parser
 
 app = typer.Typer()
 console = Console()
 
-logger = setup_logging()
+
+PAPYRUS_LOG_LEVEL = os.getenv("PAPYRUS_LOG_LEVEL", "DEBUG")
 
 
 @app.command()
-def main(name: str) -> None:
+def main(
+    name: str,
+    routes_file: str = typer.Option(
+        "routes.py", "--routes-file", "-r", help="The routes file to parse"
+    ),
+    verbose: bool = typer.Option(
+        False,
+        "--verbose",
+        "-v",
+        help="Set log level to DEBUG, otherwise WARNING (log level can be "
+        "set with PAPYRUS_LOG_LEVEL environment variable)",
+    ),
+) -> None:
     """Say hello to NAME."""
-    logger.info("Starting Papyrus...")
+    setup_logging(level=PAPYRUS_LOG_LEVEL if verbose else "WARNING")
+    logger = logging.getLogger("papyrus")
+
+    if logger:
+        logger.info("Starting Papyrus...")
     console.print(f"Hello, {name}!")
+    parser = Parser()
+    routes = parser.get_routes_pattern(Path(), routes_file)
+    console.print(routes)
 
 
 if __name__ == "__main__":

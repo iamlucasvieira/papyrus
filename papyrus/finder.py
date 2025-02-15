@@ -1,7 +1,12 @@
 """Module responsible for finding information in a pyramid application."""
 
+import logging
 import os
 from pathlib import Path
+
+from papyrus.log import log_time
+
+logger = logging.getLogger(__name__)
 
 ROUTES_FILE_NAME = os.getenv("PAPYRUS_ROUTES_FILE_NAME", "routes.py")
 
@@ -9,10 +14,8 @@ ROUTES_FILE_NAME = os.getenv("PAPYRUS_ROUTES_FILE_NAME", "routes.py")
 class Finder:
     """Class responsible for finding files in a pyramid application."""
 
-    def __init__(self: "Finder") -> None:
-        """Initialize the finder with the request."""
-
     @staticmethod
+    @log_time(logger)
     def find_file(current_dir: Path, file_name: str) -> Path | None:
         """Find a file recursevely, returns first match."""
         if (current_dir / file_name).exists():
@@ -27,6 +30,7 @@ class Finder:
         return None
 
     @staticmethod
+    @log_time(logger)
     def find_all_files(current_dir: Path, file_type: str) -> list[Path]:
         """Find all files of a certain type in a directory."""
         result = []
@@ -42,6 +46,7 @@ class PyramidFiles:
     """Class with utilities for getting pyramid files."""
 
     @staticmethod
+    @log_time(logger)
     def get_routes(base_dir: Path, file_name: str | None) -> Path:
         """Return the path to routes file, otherwise raise FileNotFounderror."""
         file_name = file_name or ROUTES_FILE_NAME
