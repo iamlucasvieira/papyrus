@@ -32,6 +32,29 @@ class TestParsing:
     ) -> None:
         """Test the get_all_routes method with no file."""
 
+    @pytest.mark.parametrize(
+        ("call", "expected_name", "expected_pattern"),
+        [
+            ("config.add_route('about', '/about')", "about", "/about"),
+            ("config.add_route('user')", None, None),
+            ("config.add_route()", None, None),
+            ("config.add_route('about', '/about', 'GET')", "about", "/about"),
+        ],
+        ids=["valid_call", "no_pattern", "no_args", "extra_args"],
+    )
+    def test_call_to_route_name_and_pattern(
+        self: "TestParsing",
+        call: str,
+        expected_name: str | None,
+        expected_pattern: str | None,
+    ) -> None:
+        """Test the call_to_route_name_and_pattern method."""
+        node = getattr(ast.parse(call).body[0], "value", None)
+        assert isinstance(node, ast.Call), "Expected a call node"
+        route_name, route_pattern = Parser.call_to_route_name_and_pattern(node)
+        assert route_name == expected_name
+        assert route_pattern == expected_pattern
+
 
 class TestAstCrawler:
     """Tests for the AstCrawler class."""
@@ -43,8 +66,7 @@ class TestAstCrawler:
 
     def test_iter_add_route_calls(self: "TestAstCrawler", routes_file: Path) -> None:
         """Test the iter_add_route_calls method."""
-        crawler = AstCrawler(routes_file)
-        calls = list(crawler.iter_add_route_calls())
+        calls = list(AstCrawler.iter_method_calls(routes_file, "add_route"))
         expected_calls = 3
         assert len(calls) == expected_calls, (
             f"Expected {expected_calls} calls to add_route"
@@ -55,26 +77,3 @@ class TestAstCrawler:
             "about",
             "user",
         }
-
-    @pytest.mark.parametrize(
-        ("call", "expected_name", "expected_pattern"),
-        [
-            ("config.add_route('about', '/about')", "about", "/about"),
-            ("config.add_route('user')", None, None),
-            ("config.add_route()", None, None),
-            ("config.add_route('about', '/about', 'GET')", "about", "/about"),
-        ],
-        ids=["valid_call", "no_pattern", "no_args", "extra_args"],
-    )
-    def test_get_route_name_and_pattern(
-        self: "TestAstCrawler",
-        call: str,
-        expected_name: str | None,
-        expected_pattern: str | None,
-    ) -> None:
-        """Test the get_route_name_and_pattern method."""
-        node = getattr(ast.parse(call).body[0], "value", None)
-        assert isinstance(node, ast.Call), "Expected a call node"
-        route_name, route_pattern = AstCrawler.get_route_name_and_pattern(node)
-        assert route_name == expected_name
-        assert route_pattern == expected_pattern
