@@ -1,6 +1,9 @@
 """Module responsible for finding information in a pyramid application."""
 
+import os
 from pathlib import Path
+
+ROUTES_FILE_NAME = os.getenv("PAPYRUS_ROUTES_FILE_NAME", "routes.py")
 
 
 class Finder:
@@ -33,3 +36,17 @@ class Finder:
             elif path.suffix == file_type:
                 result.append(path)
         return result
+
+
+class PyramidFiles:
+    """Class with utilities for getting pyramid files."""
+
+    @staticmethod
+    def get_routes(base_dir: Path, file_name: str | None) -> Path:
+        """Return the path to routes file, otherwise raise FileNotFounderror."""
+        file_name = file_name or ROUTES_FILE_NAME
+        file_path = Finder.find_file(base_dir, file_name)
+        if not file_path:
+            msg = f"File {file_name} not found in {base_dir}."
+            raise FileNotFoundError(msg)
+        return file_path
