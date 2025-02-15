@@ -19,9 +19,11 @@ PAPYRUS_LOG_LEVEL = os.getenv("PAPYRUS_LOG_LEVEL", "DEBUG")
 
 @app.command()
 def main(
-    name: str,
     routes_file: str = typer.Option(
         "routes.py", "--routes-file", "-r", help="The routes file to parse"
+    ),
+    views_dir: str = typer.Option(
+        "views", "--views-dir", "-v", help="The views directory to parse"
     ),
     verbose: bool = typer.Option(
         False,
@@ -37,9 +39,7 @@ def main(
 
     if logger:
         logger.info("Starting Papyrus...")
-    console.print(f"Hello, {name}!")
-    parser = Parser()
-    routes = parser.get_routes_pattern(Path(), routes_file)
+    routes = Parser.get_routes(Path(), routes_file, views_dir)
     console.print(routes)
 
 

@@ -21,11 +21,24 @@ class Route:
 
     name: str
     pattern: str
-    methods: list[str]
+    methods: set[str]
 
 
 class Parser:
     """Class responsible for parsing information in a pyramid application."""
+
+    @staticmethod
+    @log_time(logger)
+    def get_routes(
+        base_dir: Path, routes_file_name: str | None, views_dir: str | None
+    ) -> dict[str, Route]:
+        """Get all routes from a pyramid application."""
+        routes = Parser.get_routes_pattern(base_dir, routes_file_name)
+        views = Parser.get_views_methods(base_dir, views_dir)
+        return {
+            route_name: Route(route_name, route_pattern, views[route_name])
+            for route_name, route_pattern in routes.items()
+        }
 
     @staticmethod
     @log_time(logger)
@@ -91,8 +104,8 @@ class Parser:
             return None, None
         keywords = {k.arg: k.value for k in view_call.keywords}
         route_name = getattr(keywords.get("route_name"), "value", None)
-        method = getattr(keywords.get("method"), "value", None)
-        return route_name, method
+        request_method = getattr(keywords.get("request_method"), "value", None)
+        return route_name, request_method
 
 
 class AstFilter(ABC):

@@ -20,18 +20,18 @@ def includeme(config: Configurator) -> None:
     views_data = """
 from pyramid.view import view_config
 
-@view_config(route_name="home", method="GET")
+@view_config(route_name="home", request_method="GET")
 def home(request):
     return {"name": "home"}
 
-@view_config(route_name="about", method="GET")
+@view_config(route_name="about", request_method="GET")
 def about(request):
     return {"name": "about"}
 
-@view_config(route_name="user", method="GET")
-@view_config(route_name="user", method="POST")
-@view_config(route_name="user", method="PUT")
-@view_config(route_name="user", method="DELETE")
+@view_config(route_name="user", request_method="GET")
+@view_config(route_name="user", request_method="POST")
+@view_config(route_name="user", request_method="PUT")
+@view_config(route_name="user", request_method="DELETE")
 def user(request):
     return {"name": "user"}
     """

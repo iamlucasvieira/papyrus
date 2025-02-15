@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from papyrus.parsing import AstCrawler, AstFilterMethodCall, Parser
+from papyrus.parsing import AstCrawler, AstFilterMethodCall, Parser, Route
 
 
 class TestParsing:
@@ -58,6 +58,15 @@ class TestParsing:
         route_name, route_pattern = Parser.route_call_to_route_name_and_pattern(node)
         assert route_name == expected_name
         assert route_pattern == expected_pattern
+
+    def test_get_routes(self: "TestParsing", pyramid_app_dir: Path) -> None:
+        """Test the get_routes method."""
+        routes = Parser.get_routes(pyramid_app_dir, "routes.py", "views")
+        assert routes == {
+            "home": Route("home", "/", {"GET"}),
+            "about": Route("about", "/about", {"GET"}),
+            "user": Route("user", "/user/{id}", {"GET", "POST", "PUT", "DELETE"}),
+        }
 
 
 class TestAstCrawler:
