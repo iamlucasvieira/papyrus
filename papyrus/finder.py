@@ -47,7 +47,7 @@ class PyramidFiles:
 
     @staticmethod
     @log_time(logger)
-    def get_routes(base_dir: Path, file_name: str | None) -> Path:
+    def get_routes_path(base_dir: Path, file_name: str | None) -> Path:
         """Return the path to routes file, otherwise raise FileNotFounderror."""
         file_name = file_name or ROUTES_FILE_NAME
         file_path = Finder.find_file(base_dir, file_name)
