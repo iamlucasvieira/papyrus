@@ -29,4 +29,4 @@ def ruff(session: nox.Session) -> None:
 def mypy(session: nox.Session) -> None:
     """Run mypy."""
     sync_install(session, env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location})
-    session.run("mypy", ".")
+    session.run("mypy")

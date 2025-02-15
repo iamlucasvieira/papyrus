@@ -24,7 +24,9 @@ package = true
 
 [tool.mypy]
 strict = true
-exclude = ["noxfile.py"]
+python_version = "3.13"
+packages = ["papyrus", "tests"]
+
 
 [project.scripts]
 papyrus = "papyrus.main:app"
