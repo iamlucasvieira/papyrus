@@ -24,17 +24,32 @@ class Route:
     methods: set[str]
 
 
+@dataclass(frozen=True)
+class PyramidInfo:
+    """Dataclass representing information about a pyramid application."""
+
+    views_dir_name: str
+    routes_file_name: str
+
+
 class Parser:
     """Class responsible for parsing information in a pyramid application."""
 
     @staticmethod
     @log_time(logger)
-    def get_routes(
-        base_dir: Path, routes_file_name: str | None, views_dir: str | None
-    ) -> dict[str, Route]:
-        """Get all routes from a pyramid application."""
-        routes = Parser.get_routes_pattern(base_dir, routes_file_name)
-        views = Parser.get_views_methods(base_dir, views_dir)
+    def get_routes(base_dir: Path, pyramid_info: PyramidInfo) -> dict[str, Route]:
+        """Get all routes from a pyramid application.
+
+        Args:
+            base_dir: The base directory of the pyramid application.
+            pyramid_info: Information about the pyramid application.
+
+        Returns:
+            A dictionary with the route name as the key and Route as the value.
+
+        """
+        routes = Parser.get_routes_pattern(base_dir, pyramid_info.routes_file_name)
+        views = Parser.get_views_methods(base_dir, pyramid_info.views_dir_name)
         return {
             route_name: Route(route_name, route_pattern, views[route_name])
             for route_name, route_pattern in routes.items()
@@ -42,10 +57,16 @@ class Parser:
 
     @staticmethod
     @log_time(logger)
-    def get_routes_pattern(base_dir: Path, file_name: str | None) -> dict[str, str]:
+    def get_routes_pattern(base_dir: Path, file_name: str) -> dict[str, str]:
         """Get all routes from a pyramid application.
 
-        Returns dict with keys being route name and value the pattern
+        Args:
+            base_dir: The base directory of the pyramid application.
+            file_name: The name of the routes file.
+
+        Returns:
+            A dictionary with the route name as the key and pattern as the value.
+
         """
         routes_file = PyramidFiles.get_routes_path(base_dir, file_name)
 
@@ -62,12 +83,10 @@ class Parser:
 
     @staticmethod
     @log_time(logger)
-    def get_views_methods(
-        base_dir: Path, views_dir: str | None = None
-    ) -> dict[str, set[str]]:
+    def get_views_methods(base_dir: Path, views_dir: str) -> dict[str, set[str]]:
         """Get all views methods from a pyramid application."""
         views = defaultdict(set)
-        views_path = base_dir / views_dir if views_dir else base_dir
+        views_path = PyramidFiles.get_views_path(base_dir, views_dir)
         views_files = Finder.find_all_files(views_path, ".py")
         for views_file in views_files:
             crawler = AstCrawler(views_file)

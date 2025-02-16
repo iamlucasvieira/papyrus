@@ -53,7 +53,7 @@ def log_time(logger: logging.Logger) -> Callable[[Callable[P, T]], Callable[P, T
                 error_msg = (
                     f"[b red]ERROR[/b red] {function_repr} {execution_time_repr}"
                 )
-                logger.exception(error_msg, extra={"markup": True})
+                logger.debug(error_msg, extra={"markup": True})
                 raise
 
         return wrapper
