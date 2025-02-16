@@ -1,8 +1,8 @@
 """Application entry point."""
 
 import logging
-import os
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from rich.console import Console
@@ -15,32 +15,51 @@ from papyrus.pyramid import PyramidInfo
 app = typer.Typer()
 console = Console()
 
-LOG_LEVEL = os.getenv("PAPYRUS_LOG_LEVEL", "DEBUG")
-ROUTES_FILE_NAME = os.getenv("PAPYRUS_ROUTES_FILE_NAME", "routes.py")
-VIEWS_DIR = os.getenv("PAPYRUS_VIEWS_DIR", "views")
-
 
 @app.command()
 def main(
-    base_dir: Path = typer.Argument(
-        None, help="The base directory to parse (defaults to cwd)"
-    ),
-    routes_file: str = typer.Option(
-        ROUTES_FILE_NAME, "--routes-file", "-r", help="The routes file to parse"
-    ),
-    views_dir: str = typer.Option(
-        VIEWS_DIR, "--views-dir", "-v", help="The views directory to parse"
-    ),
-    verbose: bool = typer.Option(
-        False,
-        "--verbose",
-        "-v",
-        help="Set log level to DEBUG, otherwise WARNING (log level can be "
-        "set with PAPYRUS_LOG_LEVEL environment variable)",
-    ),
+    base_dir: Annotated[
+        Path | None,
+        typer.Argument(help="The base directory to parse (defaults to cwd)"),
+    ] = None,
+    routes_file: Annotated[
+        str,
+        typer.Option(
+            "--routes-file",
+            "-r",
+            help="The routes file to parse",
+            envvar="PAPYRUS_ROUTES_FILE_NAME",
+        ),
+    ] = "routes.py",
+    views_dir: Annotated[
+        str,
+        typer.Option(
+            "--views-dir",
+            "-v",
+            help="The views directory to parse",
+            envvar="PAPYRUS_VIEWS_DIR",
+        ),
+    ] = "views",
+    verbose: Annotated[
+        bool,
+        typer.Option(
+            "--verbose",
+            "-v",
+            help="Set log level to DEBUG",
+        ),
+    ] = False,
+    log_level: Annotated[
+        str,
+        typer.Option(
+            "--log-level",
+            "-l",
+            help="Set the log level",
+            envvar="PAPYRUS_LOG_LEVEL",
+        ),
+    ] = "WARNING",
 ) -> None:
-    """Say hello to NAME."""
-    setup_logging(level=LOG_LEVEL if verbose else "WARNING")
+    """Parse Pyramid routes and views."""
+    setup_logging(level="DEBUG" if verbose else log_level)
     logger = logging.getLogger("papyrus")
     pyramid_info = PyramidInfo(routes_file_name=routes_file, views_dir_name=views_dir)
     base_dir = base_dir or Path.cwd()
