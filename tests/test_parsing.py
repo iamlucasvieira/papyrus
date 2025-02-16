@@ -30,7 +30,7 @@ class TestParsing:
 
     def test_get_views_methods(self: "TestParsing", pyramid_app_dir: Path) -> None:
         """Test the get_views_methods method."""
-        results = Parser.get_views_methods(pyramid_app_dir, "views")
+        results = Parser.get_routes_methods(pyramid_app_dir, "views")
         assert results == {
             "home": {"GET"},
             "about": {"GET"},

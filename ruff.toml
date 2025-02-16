@@ -123,5 +123,6 @@ docstring-code-line-length = "dynamic"
 [lint.flake8-bugbear]
 extend-immutable-calls = [
     "typer.Option",
+    "typer.Argument",
 ]
 

@@ -31,7 +31,7 @@ class Parser:
 
         """
         routes = Parser.get_routes_pattern(base_dir, pyramid_info.routes_file_name)
-        views = Parser.get_views_methods(base_dir, pyramid_info.views_dir_name)
+        views = Parser.get_routes_methods(base_dir, pyramid_info.views_dir_name)
         return {
             route_name: Route(route_name, route_pattern, views[route_name])
             for route_name, route_pattern in routes.items()
@@ -65,20 +65,29 @@ class Parser:
 
     @staticmethod
     @log_time(logger)
-    def get_views_methods(base_dir: Path, views_dir: str) -> dict[str, set[str]]:
-        """Get all views methods from a pyramid application."""
-        views = defaultdict(set)
+    def get_routes_methods(base_dir: Path, views_dir: str) -> dict[str, set[str]]:
+        """Get all routes request methods from a pyramid application.
+
+        Args:
+            base_dir: The base directory of the pyramid application.
+            views_dir: The name of the views directory.
+
+        Returns:
+            A dictionary with the route name as the key and a set of route methods.
+
+        """
+        routes = defaultdict(set)
         views_path = PyramidFiles.get_views_path(base_dir, views_dir)
         views_files = Finder.find_all_files(views_path, ".py")
         for views_file in views_files:
             crawler = AstCrawler(views_file)
             for view_call in crawler.iter_decorators_named("view_config"):
-                view_name, view_method = Parser.view_call_to_route_name_and_method(
+                route_name, route_method = Parser.view_call_to_route_name_and_method(
                     view_call
                 )
-                if view_name and view_method:
-                    views[view_name].add(view_method)
-        return views
+                if route_name and route_method:
+                    routes[route_name].add(route_method)
+        return routes
 
     @staticmethod
     @log_time(logger)

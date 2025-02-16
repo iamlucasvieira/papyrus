@@ -22,6 +22,9 @@ VIEWS_DIR = os.getenv("PAPYRUS_VIEWS_DIR", "views")
 
 @app.command()
 def main(
+    base_dir: Path = typer.Argument(
+        None, help="The base directory to parse (defaults to cwd)"
+    ),
     routes_file: str = typer.Option(
         ROUTES_FILE_NAME, "--routes-file", "-r", help="The routes file to parse"
     ),
@@ -34,9 +37,6 @@ def main(
         "-v",
         help="Set log level to DEBUG, otherwise WARNING (log level can be "
         "set with PAPYRUS_LOG_LEVEL environment variable)",
-    ),
-    base_dir: Path | None = typer.Option(
-        None, "--base-dir", "-b", help="The base directory to parse (defaults to cwd)"
     ),
 ) -> None:
     """Say hello to NAME."""
