@@ -4,7 +4,11 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
-from papyrus.exceptions import RoutesFileNotFoundError, ViewsDirNotFoundError
+from papyrus.exceptions import (
+    InvalidUrlPatternError,
+    RoutesFileNotFoundError,
+    ViewsDirNotFoundError,
+)
 from papyrus.finder import Finder
 from papyrus.log import log_time
 
@@ -18,6 +22,31 @@ class Route:
     name: str
     pattern: str
     methods: set[str]
+
+
+def extract_url_parameters(pattern: str) -> list[str]:
+    """Extract URL parameter names from a URL pattern.
+
+    Args:
+        pattern: A URL pattern string that may contain parameters in curly braces,
+                e.g. "/user/{id}/profile/{section}"
+
+    Returns:
+        A list of parameter names found in the pattern, e.g. ["id", "section"]
+
+    Raises:
+        InvalidUrlPatternError: If the pattern contains invalid parameter syntax
+
+    """
+    parameters = []
+    for part in pattern.split("{")[1:]:
+        if "}" not in part:
+            raise InvalidUrlPatternError(pattern, "Missing closing brace")
+        param_name = part.split("}")[0]
+        if not param_name:
+            raise InvalidUrlPatternError(pattern, "Missing parameter name")
+        parameters.append(param_name)
+    return parameters
 
 
 @dataclass(frozen=True)

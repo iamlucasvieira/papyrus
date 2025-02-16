@@ -17,3 +17,11 @@ class ViewsDirNotFoundError(FileNotFoundError):
     def __init__(self, views_dir: str, base_dir: Path) -> None:
         """Initialize the exception."""
         super().__init__(f"Directory {views_dir} not found in {base_dir}.")
+
+
+class InvalidUrlPatternError(ValueError):
+    """Exception raised when the URL pattern is invalid."""
+
+    def __init__(self, pattern: str, issue: str) -> None:
+        """Initialize the exception."""
+        super().__init__(f"Invalid URL pattern: {pattern} ({issue})")

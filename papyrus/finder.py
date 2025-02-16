@@ -3,7 +3,6 @@
 import logging
 from pathlib import Path
 
-from papyrus.exceptions import RoutesFileNotFoundError, ViewsDirNotFoundError
 from papyrus.log import log_time
 
 logger = logging.getLogger(__name__)
@@ -38,5 +37,3 @@ class Finder:
     def find_all_files(current_dir: Path, file_type: str) -> list[Path]:
         """Find all files of a certain type in a directory."""
         return list(current_dir.rglob(f"*{file_type}"))
-
-
