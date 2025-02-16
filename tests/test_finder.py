@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from papyrus.finder import Finder, PyramidFiles
+from papyrus.finder import Finder
 
 
 class TestFinder:
@@ -75,19 +75,3 @@ class TestFinder:
         """Test the find_dir method returns first found directory in nested dirs."""
         result = Finder.find_dir(tmp_dir, "last")
         assert result == tmp_dir / "dir" / "dir" / "last"
-
-
-class TestPyramidFiles:
-    """Tests for the PyramidFiles class."""
-
-    def test_get_routes(self: "TestPyramidFiles", pyramid_app_dir: Path) -> None:
-        """Assert get_routes returns existing file."""
-        routes_file = PyramidFiles.get_routes_path(pyramid_app_dir, "routes.py")
-        assert routes_file.exists()
-
-    def test_get_routes_not_found(
-        self: "TestPyramidFiles", pyramid_app_dir: Path
-    ) -> None:
-        """Assert get_routes raises error when routes file not found."""
-        with pytest.raises(FileNotFoundError, match="missing.py"):
-            PyramidFiles.get_routes_path(pyramid_app_dir, "missing.py")

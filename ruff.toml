@@ -79,6 +79,7 @@ select = [
     "RUF"
 ]
 
+
 ignore = [
     "S101",  # Use of assert detected.
     "D203",  # 1 blank line required before class docstring.
@@ -118,3 +119,9 @@ docstring-code-format = true
 # This only has an effect when the `docstring-code-format` setting is
 # enabled.
 docstring-code-line-length = "dynamic"
+
+[lint.flake8-bugbear]
+extend-immutable-calls = [
+    "typer.Option",
+]
+

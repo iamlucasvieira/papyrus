@@ -5,7 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from papyrus.parsing import AstCrawler, AstFilterMethodCall, Parser, PyramidInfo, Route
+from papyrus.parsing import AstCrawler, AstFilterMethodCall, Parser
+from papyrus.pyramid import PyramidInfo, Route
 
 
 class TestParsing:

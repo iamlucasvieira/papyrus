@@ -5,31 +5,13 @@ import logging
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from collections.abc import Generator
-from dataclasses import dataclass
 from pathlib import Path
 
+from papyrus.finder import Finder
 from papyrus.log import log_time
-
-from .finder import Finder, PyramidFiles
+from papyrus.pyramid import PyramidFiles, PyramidInfo, Route
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass(frozen=True)
-class Route:
-    """Dataclass representing a route in a pyramid application."""
-
-    name: str
-    pattern: str
-    methods: set[str]
-
-
-@dataclass(frozen=True)
-class PyramidInfo:
-    """Dataclass representing information about a pyramid application."""
-
-    views_dir_name: str
-    routes_file_name: str
 
 
 class Parser:

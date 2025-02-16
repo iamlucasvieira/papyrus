@@ -9,7 +9,8 @@ from rich.console import Console
 
 from papyrus.exceptions import RoutesFileNotFoundError, ViewsDirNotFoundError
 from papyrus.log import setup_logging
-from papyrus.parsing import Parser, PyramidInfo
+from papyrus.parsing import Parser
+from papyrus.pyramid import PyramidInfo
 
 app = typer.Typer()
 console = Console()
@@ -34,16 +35,20 @@ def main(
         help="Set log level to DEBUG, otherwise WARNING (log level can be "
         "set with PAPYRUS_LOG_LEVEL environment variable)",
     ),
+    base_dir: Path | None = typer.Option(
+        None, "--base-dir", "-b", help="The base directory to parse (defaults to cwd)"
+    ),
 ) -> None:
     """Say hello to NAME."""
     setup_logging(level=LOG_LEVEL if verbose else "WARNING")
     logger = logging.getLogger("papyrus")
     pyramid_info = PyramidInfo(routes_file_name=routes_file, views_dir_name=views_dir)
+    base_dir = base_dir or Path.cwd()
 
     if logger:
         logger.info("Starting Papyrus...")
     try:
-        routes = Parser.get_routes(Path(), pyramid_info)
+        routes = Parser.get_routes(base_dir, pyramid_info)
     except RoutesFileNotFoundError as e:
         logger.error(e)
         return
