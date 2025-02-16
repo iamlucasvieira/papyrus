@@ -5,12 +5,19 @@ from pathlib import Path
 from typing import Annotated
 
 import typer
+import yaml
+from openapi_spec_validator import validate
+from openapi_spec_validator.exceptions import (
+    OpenAPISpecValidatorError,
+)
+from openapi_spec_validator.validation.exceptions import UnresolvableParameterError
 from rich.console import Console
 
 from papyrus.exceptions import RoutesFileNotFoundError, ViewsDirNotFoundError
 from papyrus.log import setup_logging
 from papyrus.parsing import Parser
 from papyrus.pyramid import PyramidInfo
+from papyrus.writing import OpenAPI
 
 app = typer.Typer()
 console = Console()
@@ -75,7 +82,18 @@ def main(
         logger.error(e)
         return
 
-    console.print(routes)
+    filtered_routes = Parser.filter_routes_with_a_method(routes)
+    openapi = OpenAPI.from_routes(filtered_routes)
+    openapi_yaml = openapi.to_yaml()
+
+    try:
+        validate(yaml.safe_load(openapi_yaml))
+    except OpenAPISpecValidatorError as e:
+        logger.error(e)
+    except UnresolvableParameterError as e:
+        logger.info(e)
+
+    console.print(openapi_yaml)
 
 
 if __name__ == "__main__":

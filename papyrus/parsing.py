@@ -19,7 +19,7 @@ class Parser:
 
     @staticmethod
     @log_time(logger)
-    def get_routes(base_dir: Path, pyramid_info: PyramidInfo) -> dict[str, Route]:
+    def get_routes(base_dir: Path, pyramid_info: PyramidInfo) -> list[Route]:
         """Get all routes from a pyramid application.
 
         Args:
@@ -27,15 +27,22 @@ class Parser:
             pyramid_info: Information about the pyramid application.
 
         Returns:
-            A dictionary with the route name as the key and Route as the value.
+            A list of Route objects.
 
         """
         routes = Parser.get_routes_pattern(base_dir, pyramid_info.routes_file_name)
         views = Parser.get_routes_methods(base_dir, pyramid_info.views_dir_name)
-        return {
-            route_name: Route(route_name, route_pattern, views[route_name])
+
+        return [
+            Route(route_name, route_pattern, views[route_name])
             for route_name, route_pattern in routes.items()
-        }
+        ]
+
+    @staticmethod
+    @log_time(logger)
+    def filter_routes_with_a_method(routes: list[Route]) -> list[Route]:
+        """Filter routes that have at least one method."""
+        return [route for route in routes if route.methods]
 
     @staticmethod
     @log_time(logger)
@@ -59,7 +66,11 @@ class Parser:
                 route_call
             )
             if route_name and route_pattern:
-                routes[route_name] = route_pattern
+                routes[route_name] = (
+                    route_pattern
+                    if route_pattern.startswith("/")
+                    else f"/{route_pattern}"
+                )
 
         return routes
 

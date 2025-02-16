@@ -64,11 +64,20 @@ class TestParsing:
         """Test the get_routes method."""
         pyramid_info = PyramidInfo(routes_file_name="routes.py", views_dir_name="views")
         routes = Parser.get_routes(pyramid_app_dir, pyramid_info)
-        assert routes == {
-            "home": Route("home", "/", {"GET"}),
-            "about": Route("about", "/about", {"GET"}),
-            "user": Route("user", "/user/{id}", {"GET", "POST", "PUT", "DELETE"}),
-        }
+        assert routes == [
+            Route("home", "/", {"GET"}),
+            Route("about", "/about", {"GET"}),
+            Route("user", "/user/{id}", {"GET", "POST", "PUT", "DELETE"}),
+        ]
+
+    def test_filter_routes_with_a_method(self: "TestParsing") -> None:
+        """Test the filter_routes_with_a_method method."""
+        routes = [
+            Route("user", "/user/{id}", {"GET", "POST", "PUT", "DELETE"}),
+            Route("home", "/", set()),
+        ]
+        filtered_routes = Parser.filter_routes_with_a_method(routes)
+        assert filtered_routes == routes[:1]
 
 
 class TestAstCrawler:
