@@ -35,18 +35,18 @@ pip install .
 ```
 
 ## 🚀 Usage
-1. Navigate to Your Pyramid App <br>
-Go to the directory of your Pyramid app (the directory containing your __init__.py):
+### 1. Navigate to Your Pyramid App <br>
+Go to the directory of your Pyramid app (the directory containing your `routes.py`):
 ```bash
   cd /path/to/your/pyramid/app
   ```
-2. Run Papyrus<br>
+### 2. Run Papyrus<br>
 Execute the command to generate the OpenAPI documentation:
 ```bash
 papyrus
 ```
 
-3. Output Options
+### 3. Output Options
    
 Copy to Clipboard: Pipe the output directly to your clipboard (macOS example):
 ```bash
