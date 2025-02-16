@@ -63,7 +63,7 @@ Contributions are always welcome!
 If you have ideas for improvements or spot any issues, please open an issue or submit a pull request.
 
 ## 📄 License
-Distributed under the MIT License. See the LICENSE file for more details.
+Distributed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ## 🙏 Acknowledgements
 A big thank you to the maintainers of these awesome tools that make Papyrus possible:
