@@ -25,7 +25,7 @@ class TestParsing:
         self: "TestParsing", pyramid_app_dir: Path
     ) -> None:
         """Test the get_routes_pattern method with no file."""
-        with pytest.raises(FileNotFoundError, match="missing.py"):
+        with pytest.raises(FileNotFoundError, match=r"missing\.py"):
             Parser.get_routes_pattern(pyramid_app_dir, "missing.py")
 
     def test_get_views_methods(self: "TestParsing", pyramid_app_dir: Path) -> None:

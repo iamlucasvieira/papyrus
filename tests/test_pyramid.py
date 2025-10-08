@@ -20,7 +20,7 @@ class TestPyramidFiles:
         self: "TestPyramidFiles", pyramid_app_dir: Path
     ) -> None:
         """Assert get_routes raises error when routes file not found."""
-        with pytest.raises(FileNotFoundError, match="missing.py"):
+        with pytest.raises(FileNotFoundError, match=r"missing\.py"):
             PyramidFiles.get_routes_path(pyramid_app_dir, "missing.py")
 
 
